@@ -111,6 +111,8 @@ dependencies {
 
     //PictureSelector图片选择
     implementation 'com.github.xuexiangjys.PictureSelector:picture-core:1.0.4'
+    // 图片压缩
+    //implementation 'com.chenenyu:img-optimizer:1.1.1'
 
     //版本更新
     implementation 'com.github.xuexiangjys:XUpdate:1.0.9'
