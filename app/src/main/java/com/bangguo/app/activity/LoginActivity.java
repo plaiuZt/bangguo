@@ -1,5 +1,6 @@
 package com.bangguo.app.activity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
 import android.animation.ObjectAnimator;
@@ -60,7 +61,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends BaseActivity implements Validator.ValidationListener {
+public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     @BindView(R.id.logo)
     ImageView mLogo;

@@ -83,6 +83,7 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
             @Override
             public void onFailure(Call<JsonResult<LoginBannerPic>> call, Throwable t) {
                 ToastUtils.toast("加载广告数据失败");
+                skipToLoginActivity();
             }
         });
     }
@@ -157,7 +158,10 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
                     } else {
                         skipToMainActivity();
                     }
+                }else {
+                    skipToLoginActivity();
                 }
+
             }
             @Override
             public void onFailure(Call<JsonResult<String>> call, Throwable t) {
