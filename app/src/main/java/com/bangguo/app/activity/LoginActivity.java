@@ -98,7 +98,6 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
     boolean isCheckBox;
 
     private Validator validator;
-
     private Api mApi;
 
     @Override
@@ -116,6 +115,33 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
         initEvent();
     }
 
+    /**
+     * 表单验证成功
+     */
+    @Override
+    public void onValidationSucceeded() {
+        // 注解验证全部通过验证，开始后台验证
+        attemptLogin();
+    }
+
+    /**
+     * 表单验证失败
+     * @param errors 失败信息
+     */
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // 显示上面注解中添加的错误提示信息
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                ToastUtils.normal(message);
+            }
+        }
+    }
     /**
      * 初始化登录用户
      */
@@ -146,6 +172,67 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
             cbCheckbox.setChecked(false);
             isCheckBox = false;
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initEvent() {
+        // 获取屏幕高度
+        screenHeight = this.getResources().getDisplayMetrics().heightPixels;
+        // 弹起高度为屏幕高度的1/3
+        keyHeight = screenHeight / 3;
+
+        // 输入账号状态监听，在右边显示或隐藏clean
+        addIconClearListener(mEtAccount,mIvCleanAccount);
+        // 监听EtPassword输入状态，在右边显示或隐藏clean
+        addIconClearListener(mEtPassword,mCleanPassword);
+
+        /*
+         * 记住密码Checkbox点击监听器
+         * */
+        cbCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isCheckBox = isChecked;
+            }
+        });
+
+        /*
+         * 禁止键盘弹起的时候可以滚动
+         */
+        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        // ScrollView监听滑动状态
+        mScrollView.addOnLayoutChangeListener(new ViewGroup.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+              /* old是改变前的左上右下坐标点值，没有old的是改变后的左上右下坐标点值
+              现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起*/
+                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
+                    int dist = mContent.getBottom() - mScrollView.getHeight();
+                    if (dist > 0) {
+                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(mContent, "translationY", 0.0f, -dist);
+                        mAnimatorTranslateY.setDuration(300);
+                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
+                        mAnimatorTranslateY.start();
+                        AnimationToolUtils.zoomIn(mLogo, scale, dist);
+                    }
+
+                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
+                    if ((mContent.getBottom() - oldBottom) > 0) {
+                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(mContent, "translationY", mContent.getTranslationY(), 0);
+                        mAnimatorTranslateY.setDuration(300);
+                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
+                        mAnimatorTranslateY.start();
+                        //键盘收回后，logo恢复原来大小，位置同样回到初始位置
+                        AnimationToolUtils.zoomOut(mLogo, scale);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -226,6 +313,24 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
     private void forgetPassword(){
         ToastUtils.normal("请联系管理员修改密码！", 3000);
     }
+    /**
+     * 点击眼睛图标显示或隐藏密码
+     */
+    private void changePasswordEye(){
+        if(mEtPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD){
+            mEtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            mIvShowPwd.setImageResource(R.drawable.icon_pass_visuable);
+        }else {
+            mEtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mIvShowPwd.setImageResource(R.drawable.icon_pass_gone);
+        }
+
+        //将光标移至末尾
+        String pwd = mEtPassword.getText().toString();
+        if(!TextUtils.isEmpty(pwd)){
+            mEtPassword.setSelection(pwd.length());
+        }
+    }
 
     @OnClick({R.id.iv_clean_account,R.id.clean_password,R.id.iv_show_pwd,R.id.forget_password,R.id.btn_login})
     public void onViewClicked(View view){
@@ -246,45 +351,6 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
             case R.id.btn_login:
                 validator.validate();
                 break;
-        }
-    }
-    @Override
-    public void onValidationSucceeded() {
-        // 注解验证全部通过验证，开始后台验证
-        attemptLogin();
-    }
-
-    @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        for (ValidationError error : errors) {
-            View view = error.getView();
-            String message = error.getCollatedErrorMessage(this);
-
-            // 显示上面注解中添加的错误提示信息
-            if (view instanceof EditText) {
-                ((EditText) view).setError(message);
-            } else {
-                ToastUtils.normal(message);
-            }
-        }
-    }
-
-    /**
-     * 点击眼睛图标显示或隐藏密码
-     */
-    private void changePasswordEye(){
-        if(mEtPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD){
-            mEtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            mIvShowPwd.setImageResource(R.drawable.icon_pass_visuable);
-        }else {
-            mEtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            mIvShowPwd.setImageResource(R.drawable.icon_pass_gone);
-        }
-
-        //将光标移至末尾
-        String pwd = mEtPassword.getText().toString();
-        if(!TextUtils.isEmpty(pwd)){
-            mEtPassword.setSelection(pwd.length());
         }
     }
 
@@ -314,68 +380,6 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
             }
         });
     }
-    @SuppressLint("ClickableViewAccessibility")
-    private void initEvent() {
-
-        // 获取屏幕高度
-        screenHeight = this.getResources().getDisplayMetrics().heightPixels;
-        // 弹起高度为屏幕高度的1/3
-        keyHeight = screenHeight / 3;
-
-        // 输入账号状态监听，在右边显示或隐藏clean
-        addIconClearListener(mEtAccount,mIvCleanAccount);
-        // 监听EtPassword输入状态，在右边显示或隐藏clean
-        addIconClearListener(mEtPassword,mCleanPassword);
-
-        /*
-         * 记住密码Checkbox点击监听器
-         * */
-        cbCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isCheckBox = isChecked;
-            }
-        });
-
-        /*
-         * 禁止键盘弹起的时候可以滚动
-         */
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-        // ScrollView监听滑动状态
-        mScrollView.addOnLayoutChangeListener(new ViewGroup.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-              /* old是改变前的左上右下坐标点值，没有old的是改变后的左上右下坐标点值
-              现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起*/
-                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    int dist = mContent.getBottom() - mScrollView.getHeight();
-                    if (dist > 0) {
-                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(mContent, "translationY", 0.0f, -dist);
-                        mAnimatorTranslateY.setDuration(300);
-                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
-                        mAnimatorTranslateY.start();
-                        AnimationToolUtils.zoomIn(mLogo, scale, dist);
-                    }
-
-                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-                    if ((mContent.getBottom() - oldBottom) > 0) {
-                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(mContent, "translationY", mContent.getTranslationY(), 0);
-                        mAnimatorTranslateY.setDuration(300);
-                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
-                        mAnimatorTranslateY.start();
-                        //键盘收回后，logo恢复原来大小，位置同样回到初始位置
-                        AnimationToolUtils.zoomOut(mLogo, scale);
-                    }
-                }
-            }
-        });
-    }
-
     /**
      * 根据返回的结果，存储用户必要的数据到SharePreference
      * */
