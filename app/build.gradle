@@ -130,4 +130,12 @@ dependencies {
     //悬浮按钮
     implementation 'com.github.clans:fab:1.6.4'
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+
+    // android-saripaar 基于规则的Android表单验证库
+    implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
+
+    // QMUI框架 link: http://qmuiteam.com/android
+    // 本App 搭建的基础框架，基本使用控件功能请看官网的功能列表
+    implementation 'com.qmuiteam:qmui:1.2.0'
+    implementation 'com.qmuiteam:arch:0.3.1'
 }

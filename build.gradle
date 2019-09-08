@@ -11,9 +11,6 @@ buildscript {
         
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'com.chenenyu:img-optimizer:1.1.1' // 图片压缩
-//        classpath 'com.alibaba:arouter-api:1.2.1'
-        //classpath 'com.github.xuexiangjys.XRouter:xrouter-plugin:1.0.1'
     }
 }
 

@@ -7,4 +7,6 @@
     <color name="colorAccent_select">#65b0dc</color>
     <color name="color_f4">#F4F4F4</color>
     <color name="gray_icon">#99A0AA</color>
+
+    <color name="blue_primary_dark">#1976D2</color>
 </resources>
