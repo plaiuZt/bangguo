@@ -25,6 +25,7 @@ public class LoginInfo {
     private String firstDepId;
     private String firstDepName;
     private String depName;
+    private String password;
 
     public String getToken() {
         return token;
@@ -144,4 +145,8 @@ public class LoginInfo {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
+    public String getPassword() { return password;}
+
+    public void setPassword(String password) { this.password = password; }
 }

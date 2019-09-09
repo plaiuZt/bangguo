@@ -6,6 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import androidx.multidex.MultiDex;
 
+import com.bangguo.app.common.enums.ParamType;
+import com.bangguo.app.http.HttpCommonParamInterceptor;
 import com.bangguo.app.http.Api;
 import com.bangguo.app.common.notification.MainNotification;
 import com.bangguo.app.common.utils.PreferenceUtils;
@@ -24,6 +26,7 @@ import com.xuexiang.xutil.app.AppUtils;
 
 import org.litepal.LitePal;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -53,6 +56,8 @@ public class App extends Application {
         //解决4.x运行崩溃的问题
         MultiDex.install(this);
     }
+
+    private static OkHttpClient.Builder builder;
 
     @Override
     public void onCreate() {
@@ -121,8 +126,6 @@ public class App extends Application {
      * 配置全局Retrofit网络访问框架
      */
     private void initHttp(){
-
-        OkHttpClient.Builder builder;
         // 修改请求超时时间为6s，与全局超时时间分开
         builder = new OkHttpClient.Builder();
         builder.readTimeout(2000, TimeUnit.MILLISECONDS);
@@ -140,6 +143,21 @@ public class App extends Application {
         mApi = retrofit.create(Api.class);
     }
 
+    public void setCommonParam(Map<String,String> param, ParamType type){
+        HttpCommonParamInterceptor.Builder interceptorBuilder = new HttpCommonParamInterceptor.Builder();
+        switch (type){
+            case PARAM_MAP:
+                interceptorBuilder.addParamsMap(param);
+                break;
+            case QUERY_PARAM_MAP:
+                interceptorBuilder.addQueryParamsMap(param);
+                break;
+            case HEADER_PARAM_MAP:
+                interceptorBuilder.addHeaderParamsMap(param);
+                break;
+        }
+        builder.addInterceptor(interceptorBuilder.build());
+    }
     private void initLibs(){
         //初始化基础库
         XBasicLibInit.init(this);

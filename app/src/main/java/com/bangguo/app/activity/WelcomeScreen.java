@@ -13,15 +13,19 @@ import android.widget.Toast;
 
 import com.bangguo.app.App;
 import com.bangguo.app.R;
+import com.bangguo.app.base.webview.XPageWebViewFragment;
 import com.bangguo.app.common.constants.Constants;
 import com.bangguo.app.common.constants.SPConstants;
 import com.bangguo.app.common.utils.PreferenceUtils;
+import com.bangguo.app.common.utils.SettingSPUtils;
 import com.bangguo.app.http.Api;
 import com.bangguo.app.http.JsonResult;
 import com.bangguo.app.manager.ActivityLifecycleManager;
 import com.bangguo.app.model.LoginBannerPic;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.xuexiang.xui.widget.activity.BaseSplashActivity;
+import com.xuexiang.xutil.app.ActivityUtils;
 import com.xuexiang.xutil.tip.ToastUtils;
 
 import butterknife.BindView;
@@ -48,7 +52,8 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
     @BindView(R.id.banner_guide_foreground)
     public BGABanner mForegroundBanner;
 
-    Api mApi;
+    private Api mApi;
+    private boolean isDisplay = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,7 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
             @Override
             public void onFailure(Call<JsonResult<LoginBannerPic>> call, Throwable t) {
                 ToastUtils.toast("加载广告数据失败");
+                skipToLoginActivity();
             }
         });
     }
@@ -152,7 +158,10 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
                     } else {
                         skipToMainActivity();
                     }
+                }else {
+                    skipToLoginActivity();
                 }
+
             }
             @Override
             public void onFailure(Call<JsonResult<String>> call, Throwable t) {
@@ -230,13 +239,13 @@ public class WelcomeScreen extends AppCompatActivity implements BGABanner.Adapte
                 .apply(new RequestOptions().placeholder(R.drawable.ic_guide_b1).error(R.drawable.ic_guide_b2).dontAnimate().centerCrop())
                 .into(itemView);
     }
-
     /**
      * 设置广告图片点击跳转
      */
     @Override
     public void onBannerItemClick(BGABanner banner, ImageView itemView, @Nullable LoginBannerPic.ImageAdModel model, int position) {
         ToastUtils.toast("点击了第"+position+"页");
-        startActivity(new Intent(WelcomeScreen.this, WebViewActivity.class).putExtra("url",model.getAdUrl()));
+//        startActivity(new Intent(WelcomeScreen.this, WebViewActivity.class).putExtra("url",model.getAdUrl()));
+//        ActivityUtils.startActivity(WebViewActivity.class);
     }
 }

@@ -30,5 +30,7 @@
   <!-- Expands 系列界面 -->
 
   <dimen name="custom_section_height">36dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+  <dimen name="sp_14">14sp</dimen>
 
 </resources>
