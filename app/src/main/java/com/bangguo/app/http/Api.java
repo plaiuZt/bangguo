@@ -17,17 +17,17 @@ import rx.Observable;
 public interface Api {
 
     @GET("ad/loginbanner")
-    Observable<JsonResult<LoginBannerPic>> getBannerPic();
+    Call<JsonResult<LoginBannerPic>> getBannerPic();
 
     @GET("auth/checktoken")
-    Observable<JsonResult<String>> checkToken(@Query("token") String token);
+    Call<JsonResult<String>> checkToken(@Query("token") String token);
 
     @POST("auth/applogin")
-    Observable<JsonResult<LoginInfo>> appLogin(@Body LoginRequest body);
+    Call<JsonResult<LoginInfo>> appLogin(@Body LoginRequest body);
 
     @POST("auth/applogin")
-    Observable<JsonResult<LoginInfo>> appLogin(@QueryMap HashMap<String, String> loginInfo);
+    Call<JsonResult<LoginInfo>> appLogin(@QueryMap HashMap<String, String> loginInfo);
 
     @GET("auth/getSMScode")
-    Observable<JsonResult<String>> getSmsCode(@Query("type") String type);
+    Call<JsonResult<String>> getSmsCode(@Query("type") String type);
 }

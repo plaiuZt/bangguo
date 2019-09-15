@@ -38,17 +38,18 @@ public class Main2Activity extends BaseActivity {
     @BindView(R.id.tab_layout)
     CommonTabLayout tabLayout;
 
-    private String[] mTitles = {getString(R.string.tab1),getString(R.string.tab2),getString(R.string.tab3),getString(R.string.tab4)};
+//    private String[] mTitles = {getString(R.string.tab1),getString(R.string.tab2),getString(R.string.tab3),getString(R.string.tab4)};
+    private String[] mTitles = {"首页","发现","消息","我的"};
     private int[] mIconUnselectIds = {
             R.mipmap.ic_home_normal,R.mipmap.ic_girl_normal,R.mipmap.ic_video_normal,R.mipmap.ic_care_normal};
     private int[] mIconSelectIds = {
             R.mipmap.ic_home_selected,R.mipmap.ic_girl_selected, R.mipmap.ic_video_selected,R.mipmap.ic_care_selected};
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
 
-    private HomeFragment newsMainFragment;
-    private DiscoverFragment photosMainFragment;
-    private MessageFragment videoMainFragment;
-    private MineFragment careMainFragment;
+    private HomeFragment homeFragment;
+    private DiscoverFragment discoverFragment;
+    private MessageFragment messageFragment;
+    private MineFragment mineFragment;
     private static int tabLayoutHeight;
 
     /**
@@ -128,21 +129,21 @@ public class Main2Activity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         int currentTabPosition = 0;
         if (savedInstanceState != null) {
-            newsMainFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("newsMainFragment");
-            photosMainFragment = (DiscoverFragment) getSupportFragmentManager().findFragmentByTag("photosMainFragment");
-            videoMainFragment = (MessageFragment) getSupportFragmentManager().findFragmentByTag("videoMainFragment");
-            careMainFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag("careMainFragment");
+            homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("newsMainFragment");
+            discoverFragment = (DiscoverFragment) getSupportFragmentManager().findFragmentByTag("photosMainFragment");
+            messageFragment = (MessageFragment) getSupportFragmentManager().findFragmentByTag("videoMainFragment");
+            mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag("careMainFragment");
             currentTabPosition = savedInstanceState.getInt(AppConstant.HOME_CURRENT_TAB_POSITION);
         } else {
-            newsMainFragment = new HomeFragment();
-            photosMainFragment = new DiscoverFragment();
-            videoMainFragment = new MessageFragment();
-            careMainFragment = new MineFragment();
+            homeFragment = new HomeFragment();
+            discoverFragment = new DiscoverFragment();
+            messageFragment = new MessageFragment();
+            mineFragment = new MineFragment();
 
-            transaction.add(R.id.fl_body, newsMainFragment, "newsMainFragment");
-            transaction.add(R.id.fl_body, photosMainFragment, "photosMainFragment");
-            transaction.add(R.id.fl_body, videoMainFragment, "videoMainFragment");
-            transaction.add(R.id.fl_body, careMainFragment, "careMainFragment");
+            transaction.add(R.id.fl_body, homeFragment, "homeFragment");
+            transaction.add(R.id.fl_body, discoverFragment, "discoverFragment");
+            transaction.add(R.id.fl_body, messageFragment, "messageFragment");
+            transaction.add(R.id.fl_body, mineFragment, "mineFragment");
         }
         transaction.commit();
         SwitchTo(currentTabPosition);
@@ -158,34 +159,34 @@ public class Main2Activity extends BaseActivity {
         switch (position) {
             //首页
             case 0:
-                transaction.hide(photosMainFragment);
-                transaction.hide(videoMainFragment);
-                transaction.hide(careMainFragment);
-                transaction.show(newsMainFragment);
+                transaction.hide(discoverFragment);
+                transaction.hide(messageFragment);
+                transaction.hide(mineFragment);
+                transaction.show(homeFragment);
                 transaction.commitAllowingStateLoss();
                 break;
-            //美女
+            //发现
             case 1:
-                transaction.hide(newsMainFragment);
-                transaction.hide(videoMainFragment);
-                transaction.hide(careMainFragment);
-                transaction.show(photosMainFragment);
+                transaction.show(discoverFragment);
+                transaction.hide(messageFragment);
+                transaction.hide(mineFragment);
+                transaction.hide(homeFragment);
                 transaction.commitAllowingStateLoss();
                 break;
-            //视频
+            //消息
             case 2:
-                transaction.hide(newsMainFragment);
-                transaction.hide(photosMainFragment);
-                transaction.hide(careMainFragment);
-                transaction.show(videoMainFragment);
+                transaction.hide(discoverFragment);
+                transaction.show(messageFragment);
+                transaction.hide(mineFragment);
+                transaction.hide(homeFragment);
                 transaction.commitAllowingStateLoss();
                 break;
-            //关注
+            //我的
             case 3:
-                transaction.hide(newsMainFragment);
-                transaction.hide(photosMainFragment);
-                transaction.hide(videoMainFragment);
-                transaction.show(careMainFragment);
+                transaction.hide(discoverFragment);
+                transaction.hide(messageFragment);
+                transaction.show(mineFragment);
+                transaction.hide(homeFragment);
                 transaction.commitAllowingStateLoss();
                 break;
             default:

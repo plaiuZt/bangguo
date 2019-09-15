@@ -27,7 +27,6 @@ import com.bangguo.app.R;
 import com.bangguo.app.common.constants.Constants;
 import com.bangguo.app.common.constants.SPConstants;
 import com.bangguo.app.common.enums.ParamType;
-import com.bangguo.app.common.enums.UserType;
 import com.bangguo.app.common.utils.AlertDialogUtils;
 import com.bangguo.app.common.utils.PreferenceUtils;
 import com.bangguo.app.http.Api;
@@ -56,7 +55,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observer;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
 
@@ -248,44 +249,40 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         loginParam.setPassword(password);
         String param = new Gson().toJson(loginParam);
 
-        mApi.appLogin(loginParam).subscribe(new Observer<JsonResult<LoginInfo>>() {
+        mApi.appLogin(loginParam).enqueue(new Callback<JsonResult<LoginInfo>>() {
             @Override
-            public void onCompleted() {
-                Log.i("Login","调用登录完成");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.i("异常",e.getMessage());
-                skipToDriverActivity();
-            }
-
-            @Override
-            public void onNext(JsonResult<LoginInfo> response) {
-                LoginInfo loginInfo = response.getData();
+            public void onResponse(Call<JsonResult<LoginInfo>> call, Response<JsonResult<LoginInfo>> response) {
+                LoginInfo loginInfo = response.body().getData();
                 if(loginInfo != null){
                     saveUserDataToSharePreference(userAccount, password,loginInfo);
                     whichUserType(userAccount,password,loginInfo);
                 }
             }
+
+            @Override
+            public void onFailure(Call<JsonResult<LoginInfo>> call, Throwable t) {
+                Log.i("异常",t.getMessage());
+                //skipToDriverActivity();
+            }
         });
     }
 
     private void whichUserType(String username, String password, LoginInfo loginInfo){
-        UserType userType = loginInfo.getUserType();
-        switch (loginInfo.getUserType()){
-            case AppOwner:
+        int userType = loginInfo.getUserType();
+        switch (userType){
+            case Constants.USER_APP_DRIVER:
                 skipToOwnerActivity();
                 break;
-            case AppDirver:
+            case Constants.USER_APP_OWNER:
                 skipToDriverActivity();
                 break;
+                default:
+                    AlertDialogUtils.showDialog(
+                            this,
+                            "登录提示：",
+                            "该账户未确认组织类型，无法登录，请与管理员联系！",
+                            "重新登录");
         }
-        AlertDialogUtils.showDialog(
-                this,
-                "登录提示：",
-                "该账户未确认组织类型，无法登录，请与管理员联系！",
-                "重新登录");
     }
 
     private void skipToOwnerActivity() {
@@ -293,7 +290,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         KeyboardToolUtils.hideSoftInput(LoginActivity.this);
         // 退出界面之前把状态栏还原为白色字体与图标
         StatusBarUtils.setStatusBarDarkMode(LoginActivity.this);
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         // 结束所有Activity
@@ -354,9 +351,9 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                 break;
             case R.id.btn_login:
                 validator.validate();
-            case R.id.btn_register:
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
-                break;
+//            case R.id.btn_register:
+//                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+//                break;
         }
     }
 

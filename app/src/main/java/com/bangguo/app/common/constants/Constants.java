@@ -25,4 +25,11 @@ public interface Constants {
     int UPDATE_APP = 102;
     int INSTALL_PERMISSION_CODE = 103;
 
+
+    //用户类型
+    int USER_SUPER = 0;
+    int USER_ORDINARY = 1;
+    int USER_APP_DRIVER = 3;
+    int USER_APP_OWNER = 4;
+
 }

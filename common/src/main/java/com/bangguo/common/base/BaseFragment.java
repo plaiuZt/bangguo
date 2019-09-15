@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,7 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
         }
         initPresenter();
         initView();
+        Log.i("Base","onCreateView");
         return rootView;
     }
 

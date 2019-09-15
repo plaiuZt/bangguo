@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
@@ -283,6 +284,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
             //友盟统计
             MobclickAgent.onPause(this);
         }
+        Log.i("Base","onPause");
     }
 
     @Override
@@ -303,6 +305,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
             AppManager.getAppManager().finishActivity(this);
         }
         unbinder.unbind();
+        Log.i("Base","onDestroy");
 
     }
 
@@ -316,6 +319,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
             checkPermission();
             ToastUtils.info("从设置中返回");
         }
+        Log.i("Base","onActivityResult");
     }
 
     //----------------以下是请求权限base，子类activity只需要重写checkPermission()方法即可----------------//
@@ -357,6 +361,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
                 }
             });
         }
+        Log.i("Base","onPermissionsDenied");
     }
     //===========================================================================================================
 }

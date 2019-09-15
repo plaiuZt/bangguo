@@ -26,6 +26,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bingoogolapple.bgabanner.BGABanner;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.Observer;
 
 public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adapter<ImageView, LoginBannerPic.ImageAdModel>,BGABanner.Delegate<ImageView,LoginBannerPic.ImageAdModel> {
@@ -65,22 +68,17 @@ public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adap
         mForegroundBanner.setAdapter(this);
         mForegroundBanner.setDelegate(this);
         //从API加载图片
-        mApi.getBannerPic().subscribe(new Observer<JsonResult<LoginBannerPic>>() {
+        mApi.getBannerPic().enqueue(new Callback<JsonResult<LoginBannerPic>>() {
             @Override
-            public void onCompleted() {
-                ToastUtils.normal("加载广告数据完毕");
+            public void onResponse(Call<JsonResult<LoginBannerPic>> call, Response<JsonResult<LoginBannerPic>> response) {
+                LoginBannerPic model = response.body().getData();
+                mForegroundBanner.setData(model.getImgs(),model.getTips());
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onFailure(Call<JsonResult<LoginBannerPic>> call, Throwable t) {
                 ToastUtils.normal("加载广告数据失败");
                 skipToLoginActivity();
-            }
-
-            @Override
-            public void onNext(JsonResult<LoginBannerPic> loginBannerPicJsonResult) {
-                LoginBannerPic model = loginBannerPicJsonResult.getData();
-                mForegroundBanner.setData(model.getImgs(),model.getTips());
             }
         });
     }
@@ -143,26 +141,21 @@ public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adap
         }
         String token = PreferenceUtils.getString(SPConstants.TOKEN, "0123456789");
         // 请求后台判断token
-        mApi.checkToken(token).subscribe(new Observer<JsonResult<String>>() {
+        mApi.checkToken(token).enqueue(new Callback<JsonResult<String>>() {
             @Override
-            public void onCompleted() {
-                ToastUtils.normal("接口调用完成");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("Welcome",e.getMessage());
-                skipToLoginActivity();
-            }
-
-            @Override
-            public void onNext(JsonResult<String> response) {
+            public void onResponse(Call<JsonResult<String>> call, Response<JsonResult<String>> response) {
                 ToastUtils.normal("接口调用成功");
-                if(response.getData() == "true"){
+                if(response.body().getData() == "true"){
                     skipToMainActivity();
                 }else {
                     skipToLoginActivity();
                 }
+            }
+
+            @Override
+            public void onFailure(Call<JsonResult<String>> call, Throwable t) {
+                Log.e("Welcome",t.getMessage());
+                skipToLoginActivity();
             }
         });
     }

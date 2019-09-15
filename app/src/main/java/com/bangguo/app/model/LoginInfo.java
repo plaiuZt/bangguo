@@ -1,7 +1,5 @@
 package com.bangguo.app.model;
 
-import com.bangguo.app.common.enums.UserType;
-
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ public class LoginInfo {
     private String openId;
     private String qq;
     private String mobilePhone;
-    private UserType userType;
+    private int userType;
     private List<Integer> roleIds;
     private String roleNames;
     private String firstDepId;
@@ -138,11 +136,11 @@ public class LoginInfo {
         this.mobilePhone = mobilePhone;
     }
 
-    public UserType getUserType() {
+    public int getUserType() {
         return userType;
     }
 
-    public void setUserType(UserType userType) {
+    public void setUserType(int userType) {
         this.userType = userType;
     }
 
