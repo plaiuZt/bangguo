@@ -44,15 +44,20 @@ android {
             buildConfigField "String", "APP_ID_UMENG", '""'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation project(':common')//common
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.google.android.material:material:1.1.0-alpha10'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -63,14 +68,6 @@ dependencies {
 
     //引入XUI 1.0.5版本后只支持androidx
     implementation 'com.github.xuexiangjys:XUI:1.0.8'
-    //XPage页面框架
-    implementation 'com.github.xuexiangjys.XPage:xpage-lib:2.2.6'
-    annotationProcessor 'com.github.xuexiangjys.XPage:xpage-compiler:2.2.6'
-    //annotationProcessor project(':widget_compiler')
-    //页面路由
-    //implementation 'com.github.xuexiangjys.XRouter:xrouter-plugin:1.0.1'
-    //annotationProcessor 'com.alibaba:arouter-compiler:1.2.1'
-    //annotationProcessor ':xrouter-compiler'
     //切片
     implementation 'com.github.xuexiangjys.XAOP:xaop-runtime:x1.0.3'
 
@@ -82,10 +79,13 @@ dependencies {
     implementation 'org.litepal.android:java:3.0.0'
 
     // Okhttp库
-    implementation 'com.squareup.okhttp3:okhttp:3.1.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.0'
     // Retrofit库
-    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    //RxJava库
+    implementation 'io.reactivex:rxjava:1.0.1'
+    implementation 'io.reactivex:rxandroid:1.0.1'
 
     //XUtil
     implementation 'com.github.xuexiangjys.XUtil:xutil-core:1.1.5'
@@ -127,15 +127,18 @@ dependencies {
 
     //侧边栏菜单
     implementation 'com.yarolegovich:sliding-root-nav:1.1.0'
+    //菜单栏
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.8@aar'
     //悬浮按钮
     implementation 'com.github.clans:fab:1.6.4'
-    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-
     // android-saripaar 基于规则的Android表单验证库
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-    // QMUI框架 link: http://qmuiteam.com/android
-    // 本App 搭建的基础框架，基本使用控件功能请看官网的功能列表
+    // QMUI框架
     implementation 'com.qmuiteam:qmui:1.2.0'
     implementation 'com.qmuiteam:arch:0.3.1'
+    // easyPermissions权限管理
+    implementation 'pub.devrel:easypermissions:2.0.1'
+    //fire.im自动更新
+    implementation 'cn.hugeterry.updatefun:updatefun:1.8.6'
 }

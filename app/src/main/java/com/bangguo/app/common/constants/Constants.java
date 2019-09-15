@@ -10,8 +10,6 @@ public interface Constants {
     String SERVICE_IP = "https://www.easy-mock.com/mock/5d6cd381fca9c542568a36a3/api";
     String APP_TOKEN = "appToken";
 
-    // admin测试数据使用
-    boolean SKIP_TO_TEST_ACTIVITY = false; // 是否启用TestActivity
     boolean superAdminTest = App.getContext().getResources().getBoolean(R.bool.superAdminTest);
 
     // OkGo 连接超时时间,毫秒ms

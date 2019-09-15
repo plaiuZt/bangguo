@@ -53,7 +53,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
 import com.bangguo.app.R;
-import com.bangguo.app.utils.Utils;
+import com.bangguo.app.common.utils.Utils;
 import com.google.gson.Gson;
 import com.just.agentweb.action.PermissionInterceptor;
 import com.just.agentweb.core.AgentWeb;

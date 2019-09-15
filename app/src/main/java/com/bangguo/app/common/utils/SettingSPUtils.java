@@ -18,7 +18,6 @@ package com.bangguo.app.common.utils;
 
 import android.content.Context;
 
-import com.bangguo.app.R;
 import com.xuexiang.xutil.XUtil;
 import com.xuexiang.xutil.data.BaseSPUtil;
 

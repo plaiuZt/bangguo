@@ -1,15 +1,15 @@
 <resources>
-    <string name="app_name">bangguo</string>
-
-    <string name="service_api_key">01234567890</string>
-    <string name="default_service_api">https://localhost:8009/api</string>
     <bool name="superAdminTest">false</bool>
 
+    <string name="app_name">棒果</string>
+    <string name="service_api_key">01234567890</string>
+    <string name="default_service_api">https://localhost:8009/api</string>
+
     <!--主页tab内容-->
-    <string name="tab1">信息</string>
-    <string name="tab2">报告</string>
-    <string name="tab3">活动</string>
-    <string name="tab4">设置</string>
+    <string name="tab1">首页</string>
+    <string name="tab2">发现</string>
+    <string name="tab3">消息</string>
+    <string name="tab4">我的</string>
 
     <string name="about_item_homepage">访问官网</string>
     <string name="about_item_update">版本更新</string>

@@ -17,11 +17,12 @@
 package com.bangguo.app.base.webview;
 
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bangguo.app.R;
 import com.just.agentweb.widget.IWebLayout;

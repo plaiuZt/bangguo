@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="menu_titles">
-        <item>组件</item>
-        <item>工具</item>
-        <item>拓展</item>
-        <item>关于</item>
+        <item>主页</item>
+        <item>发现</item>
+        <item>消息</item>
+        <item>我的</item>
         <item />
         <item>退出</item>
     </string-array>

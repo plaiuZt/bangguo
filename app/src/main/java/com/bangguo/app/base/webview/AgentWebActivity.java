@@ -19,12 +19,11 @@ package com.bangguo.app.base.webview;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.KeyEvent;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bangguo.app.R;
 import com.xuexiang.xrouter.facade.Postcard;
@@ -32,7 +31,7 @@ import com.xuexiang.xrouter.facade.callback.NavCallback;
 import com.xuexiang.xrouter.launcher.XRouter;
 import com.xuexiang.xutil.tip.ToastUtils;
 
-import static com.bangguo.app.base.webview.AgentWebFragment.KEY_URL;
+import static com.xuexiang.xui.widget.imageview.preview.ui.VideoPlayerActivity.KEY_URL;
 
 /**
  * 壳浏览器

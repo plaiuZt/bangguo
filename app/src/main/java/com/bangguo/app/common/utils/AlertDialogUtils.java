@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.xuexiang.xui.widget.dialog.DialogLoader;
 
 /**
  * Created by LY on 2019/3/25.

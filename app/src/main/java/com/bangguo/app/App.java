@@ -12,9 +12,9 @@ import com.bangguo.app.http.Api;
 import com.bangguo.app.common.notification.MainNotification;
 import com.bangguo.app.common.utils.PreferenceUtils;
 import com.bangguo.app.manager.ActivityLifecycleManager;
-import com.bangguo.app.utils.sdkinit.TbsInit;
-import com.bangguo.app.utils.sdkinit.XBasicLibInit;
-import com.bangguo.app.utils.sdkinit.XUpdateInit;
+import com.bangguo.app.common.utils.sdkinit.TbsInit;
+import com.bangguo.app.common.utils.sdkinit.UpdateInit;
+import com.bangguo.common.baseapp.BaseApplication;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
@@ -33,7 +33,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class App extends Application {
+public class App extends BaseApplication {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     public static Context getContext() {
@@ -159,15 +159,7 @@ public class App extends Application {
         builder.addInterceptor(interceptorBuilder.build());
     }
     private void initLibs(){
-        //初始化基础库
-        XBasicLibInit.init(this);
-        //三方SDK初始化
-        XUpdateInit.init(this);
+        UpdateInit.init(this);
         TbsInit.init(this);
-        //运营统计数据运行时不初始化
-//        if (!BuildConfig.DEBUG) {
-//            UMengInit.init(this);
-//            BuglyInit.init(this);
-//        }
     }
 }

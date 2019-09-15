@@ -12,18 +12,22 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import rx.Observable;
 
 public interface Api {
 
     @GET("ad/loginbanner")
-    Call<JsonResult<LoginBannerPic>> getBannerPic();
+    Observable<JsonResult<LoginBannerPic>> getBannerPic();
 
     @GET("auth/checktoken")
-    Call<JsonResult<String>> checkToken(@Query("token") String token);
+    Observable<JsonResult<String>> checkToken(@Query("token") String token);
 
     @POST("auth/applogin")
-    Call<JsonResult<LoginInfo>> appLogin(@Body LoginRequest body);
+    Observable<JsonResult<LoginInfo>> appLogin(@Body LoginRequest body);
 
     @POST("auth/applogin")
-    Call<JsonResult<LoginInfo>> appLogin(@QueryMap HashMap<String, String> loginInfo);
+    Observable<JsonResult<LoginInfo>> appLogin(@QueryMap HashMap<String, String> loginInfo);
+
+    @GET("auth/getSMScode")
+    Observable<JsonResult<String>> getSmsCode(@Query("type") String type);
 }
