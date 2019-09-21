@@ -5,7 +5,11 @@
 
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="#c000A8E1" />
+            <gradient
+                android:startColor="@color/app_color_yellow"
+                android:endColor="@color/app_color_yellow_dark"
+                android:angle="90"
+                />
             <corners android:radius="6dp" />
         </shape>
     </item>
@@ -17,10 +21,9 @@
         </shape>
     </item>
 
-
     <item>
         <shape>
-            <solid android:color="@color/xui_config_color_blue" />
+            <solid android:color="@color/app_color_yellow" />
             <corners android:radius="6dp" />
         </shape>
     </item>

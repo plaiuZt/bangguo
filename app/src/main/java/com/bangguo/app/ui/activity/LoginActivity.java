@@ -21,27 +21,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bangguo.app.App;
 import com.bangguo.app.R;
-import com.bangguo.app.common.constants.Constants;
 import com.bangguo.app.common.constants.SPConstants;
-import com.bangguo.app.common.enums.ParamsType;
-import com.bangguo.app.common.utils.AlertDialogUtils;
 import com.bangguo.app.common.utils.PreferenceUtils;
 import com.bangguo.app.http.ApiService;
-import com.bangguo.app.http.JsonResult;
-import com.bangguo.app.manager.ActivityLifecycleManager;
-import com.bangguo.app.model.LoginInfo;
-import com.bangguo.app.model.request.LoginRequest;
 import com.bangguo.app.common.utils.AnimationToolUtils;
 import com.bangguo.app.common.utils.Des3Utils;
-import com.bangguo.app.common.utils.KeyboardToolUtils;
 import com.bangguo.app.ui.contract.LoginContract;
 import com.bangguo.app.ui.model.LoginModel;
 import com.bangguo.app.ui.presenter.LoginPresenter;
 import com.bangguo.common.base.BaseActivity;
 import com.bangguo.common.utils.ToastUtils;
-import com.google.gson.Gson;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -49,17 +39,9 @@ import com.mobsandgeeks.saripaar.annotation.Order;
 import com.mobsandgeeks.saripaar.annotation.Password;
 import com.xuexiang.xui.utils.StatusBarUtils;
 
-import org.litepal.LitePal;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> implements LoginContract.View, Validator.ValidationListener {
 
@@ -224,7 +206,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
         }
     }
 
-    @OnClick({R.id.iv_clean_account,R.id.clean_password,R.id.iv_show_pwd,R.id.forget_password,R.id.btn_login,R.id.btn_register})
+    @OnClick({R.id.iv_clean_account,R.id.clean_password,R.id.iv_show_pwd,R.id.forget_password,R.id.btn_login,R.id.tv_register})
     public void onViewClicked(View view){
         switch (view.getId()){
             case R.id.iv_clean_account:
@@ -242,9 +224,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                 break;
             case R.id.btn_login:
                 validator.validate();
-//            case R.id.btn_register:
-//                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
-//                break;
+                break;
+            case R.id.tv_register:
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                break;
         }
     }
 

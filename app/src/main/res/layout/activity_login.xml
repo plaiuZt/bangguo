@@ -10,7 +10,7 @@
     android:orientation="vertical"
     tools:context=".ui.activity.LoginActivity">
 
-    <ImageView
+    <com.bangguo.common.widget.CircleImageView
         android:id="@+id/logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -147,8 +147,8 @@
                     android:checked="false"
                     android:text="记住密码"
                     android:textSize="@dimen/sp_14"
-                    android:textColor="@color/app_color_blue"
-                    android:buttonTint="@color/app_color_blue" />
+                    android:textColor="@color/app_color_yellow"
+                    android:buttonTint="@color/app_color_yellow" />
 
                 <Button
                     android:id="@+id/forget_password"
@@ -159,7 +159,7 @@
                     android:layout_alignParentEnd="true"
                     android:text="忘记密码?"
                     android:textSize="@dimen/sp_14"
-                    android:textColor="@color/app_color_blue" />
+                    android:textColor="@color/app_color_yellow" />
             </RelativeLayout>
 
 
@@ -173,15 +173,14 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"/>
 
-            <Button
-                android:id="@+id/btn_register"
+            <TextView
+                android:id="@+id/tv_register"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/bg_btn_login_selected"
-                android:text="注    册"
-                android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:layout_height="wrap_content"
+                android:text="@string/register_text"
+                android:textAlignment="center"
+                android:textColor="@color/app_color_yellow"
+                android:layout_marginTop="10dp"/>
         </LinearLayout>
 
 
@@ -204,7 +203,7 @@
             android:layout_gravity="end"
             android:text="联系客服"
             android:textColor="#b0b8b2"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="1dp"
