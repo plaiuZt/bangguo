@@ -2,13 +2,12 @@ package com.bangguo.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import androidx.multidex.MultiDex;
 
-import com.bangguo.app.common.enums.ParamType;
+import com.bangguo.app.common.enums.ParamsType;
 import com.bangguo.app.http.HttpCommonParamInterceptor;
-import com.bangguo.app.http.Api;
+import com.bangguo.app.http.ApiService;
 import com.bangguo.app.common.notification.MainNotification;
 import com.bangguo.app.common.utils.PreferenceUtils;
 import com.bangguo.app.manager.ActivityLifecycleManager;
@@ -40,8 +39,8 @@ public class App extends BaseApplication {
         return context;
     }
 
-    private static Api mApi; //本APP所使用的全局网络API
-    public Api getApi() {
+    private static ApiService mApi; //本APP所使用的全局网络API
+    public ApiService getApi() {
         return mApi;
     }
 
@@ -140,10 +139,10 @@ public class App extends BaseApplication {
                 .client(builder.build())
                 .build();
         // 创建网络请求接口的实例
-        mApi = retrofit.create(Api.class);
+        mApi = retrofit.create(ApiService.class);
     }
 
-    public void setCommonParam(Map<String,String> param, ParamType type){
+    public void setCommonParam(Map<String,String> param, ParamsType type){
         HttpCommonParamInterceptor.Builder interceptorBuilder = new HttpCommonParamInterceptor.Builder();
         switch (type){
             case PARAM_MAP:

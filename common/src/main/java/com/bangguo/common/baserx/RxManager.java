@@ -9,6 +9,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+//import rx.Observable;
+//import rx.Subscription;
+//import rx.android.schedulers.AndroidSchedulers;
+//import rx.functions.Action1;
+//import rx.subscriptions.CompositeSubscription;
+
 /**
  * 用于管理单个presenter的RxBus的事件和Rxjava相关代码的生命周期处理
  * Created by xsf

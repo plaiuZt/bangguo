@@ -1,6 +1,5 @@
 package com.bangguo.app.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
 import android.animation.ObjectAnimator;
@@ -26,10 +25,10 @@ import com.bangguo.app.App;
 import com.bangguo.app.R;
 import com.bangguo.app.common.constants.Constants;
 import com.bangguo.app.common.constants.SPConstants;
-import com.bangguo.app.common.enums.ParamType;
+import com.bangguo.app.common.enums.ParamsType;
 import com.bangguo.app.common.utils.AlertDialogUtils;
 import com.bangguo.app.common.utils.PreferenceUtils;
-import com.bangguo.app.http.Api;
+import com.bangguo.app.http.ApiService;
 import com.bangguo.app.http.JsonResult;
 import com.bangguo.app.manager.ActivityLifecycleManager;
 import com.bangguo.app.model.LoginInfo;
@@ -37,6 +36,10 @@ import com.bangguo.app.model.request.LoginRequest;
 import com.bangguo.app.common.utils.AnimationToolUtils;
 import com.bangguo.app.common.utils.Des3Utils;
 import com.bangguo.app.common.utils.KeyboardToolUtils;
+import com.bangguo.app.ui.contract.LoginContract;
+import com.bangguo.app.ui.model.LoginModel;
+import com.bangguo.app.ui.presenter.LoginPresenter;
+import com.bangguo.common.base.BaseActivity;
 import com.bangguo.common.utils.ToastUtils;
 import com.google.gson.Gson;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -53,13 +56,12 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
+public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> implements LoginContract.View, Validator.ValidationListener {
 
     @BindView(R.id.logo)
     ImageView mLogo;
@@ -97,16 +99,31 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     boolean isCheckBox;
 
     private Validator validator;
-    private Api mApi;
+    private ApiService mApi;
+
+    private static final String TAG = "Login";
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_login);
+//        ButterKnife.bind(this);
+//
+//    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
-        mApi = App.getInstance().getApi();
-        StatusBarUtils.setStatusBarLightMode(this);
+    public int getLayoutId() {
+        return R.layout.activity_login;
+    }
 
+    @Override
+    public void initPresenter() {
+        mPresenter.setVM(this, mModel);
+    }
+
+    @Override
+    public void initView(Bundle savedInstanceState) {
+        //mApi = App.getInstance().getApi();
+        StatusBarUtils.setStatusBarLightMode(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
 
@@ -172,6 +189,64 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             isCheckBox = false;
         }
     }
+    /**
+     * 登录
+     */
+    private void attemptLogin(){
+        final String username = mEtAccount.getText().toString();
+        final String password = mEtPassword.getText().toString();
+        mPresenter.attemptLogin(username, password,isCheckBox);
+    }
+
+
+    /**
+     * 忘记密码处理
+     */
+    private void forgetPassword(){
+        ToastUtils.normal("请联系管理员修改密码！", 3000);
+    }
+    /**
+     * 点击眼睛图标显示或隐藏密码
+     */
+    private void changePasswordEye(){
+        if(mEtPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD){
+            mEtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            mIvShowPwd.setImageResource(R.drawable.icon_pass_visuable);
+        }else {
+            mEtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mIvShowPwd.setImageResource(R.drawable.icon_pass_gone);
+        }
+
+        //将光标移至末尾
+        String pwd = mEtPassword.getText().toString();
+        if(!TextUtils.isEmpty(pwd)){
+            mEtPassword.setSelection(pwd.length());
+        }
+    }
+
+    @OnClick({R.id.iv_clean_account,R.id.clean_password,R.id.iv_show_pwd,R.id.forget_password,R.id.btn_login,R.id.btn_register})
+    public void onViewClicked(View view){
+        switch (view.getId()){
+            case R.id.iv_clean_account:
+                mEtAccount.getText().clear();
+                mEtPassword.getText().clear();
+                break;
+            case R.id.clean_password:
+                mEtPassword.getText().clear();
+                break;
+            case R.id.iv_show_pwd:
+                changePasswordEye();
+                break;
+            case R.id.forget_password:
+                forgetPassword();
+                break;
+            case R.id.btn_login:
+                validator.validate();
+//            case R.id.btn_register:
+//                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+//                break;
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initEvent() {
@@ -233,130 +308,6 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             }
         });
     }
-
-    /**
-     * 登录
-     */
-    private void attemptLogin(){
-        final String userAccount = mEtAccount.getText().toString();
-        final String password = mEtPassword.getText().toString();
-
-        //密码加密
-        String newPassword = Des3Utils.encode(password);
-
-        LoginRequest loginParam = new LoginRequest();
-        loginParam.setUserName(userAccount);
-        loginParam.setPassword(password);
-        String param = new Gson().toJson(loginParam);
-
-        mApi.appLogin(loginParam).enqueue(new Callback<JsonResult<LoginInfo>>() {
-            @Override
-            public void onResponse(Call<JsonResult<LoginInfo>> call, Response<JsonResult<LoginInfo>> response) {
-                LoginInfo loginInfo = response.body().getData();
-                if(loginInfo != null){
-                    saveUserDataToSharePreference(userAccount, password,loginInfo);
-                    whichUserType(userAccount,password,loginInfo);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonResult<LoginInfo>> call, Throwable t) {
-                Log.i("异常",t.getMessage());
-                //skipToDriverActivity();
-            }
-        });
-    }
-
-    private void whichUserType(String username, String password, LoginInfo loginInfo){
-        int userType = loginInfo.getUserType();
-        switch (userType){
-            case Constants.USER_APP_DRIVER:
-                skipToOwnerActivity();
-                break;
-            case Constants.USER_APP_OWNER:
-                skipToDriverActivity();
-                break;
-                default:
-                    AlertDialogUtils.showDialog(
-                            this,
-                            "登录提示：",
-                            "该账户未确认组织类型，无法登录，请与管理员联系！",
-                            "重新登录");
-        }
-    }
-
-    private void skipToOwnerActivity() {
-        // 隐藏软键盘
-        KeyboardToolUtils.hideSoftInput(LoginActivity.this);
-        // 退出界面之前把状态栏还原为白色字体与图标
-        StatusBarUtils.setStatusBarDarkMode(LoginActivity.this);
-        Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        // 结束所有Activity
-        ActivityLifecycleManager.get().finishAllActivity();
-    }
-    private void skipToDriverActivity(){
-        // 隐藏软键盘
-        KeyboardToolUtils.hideSoftInput(LoginActivity.this);
-        // 退出界面之前把状态栏还原为白色字体与图标
-        StatusBarUtils.setStatusBarDarkMode(LoginActivity.this);
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        // 结束所有Activity
-        ActivityLifecycleManager.get().finishAllActivity();
-    }
-
-    /**
-     * 忘记密码处理
-     */
-    private void forgetPassword(){
-        ToastUtils.normal("请联系管理员修改密码！", 3000);
-    }
-    /**
-     * 点击眼睛图标显示或隐藏密码
-     */
-    private void changePasswordEye(){
-        if(mEtPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD){
-            mEtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            mIvShowPwd.setImageResource(R.drawable.icon_pass_visuable);
-        }else {
-            mEtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            mIvShowPwd.setImageResource(R.drawable.icon_pass_gone);
-        }
-
-        //将光标移至末尾
-        String pwd = mEtPassword.getText().toString();
-        if(!TextUtils.isEmpty(pwd)){
-            mEtPassword.setSelection(pwd.length());
-        }
-    }
-
-    @OnClick({R.id.iv_clean_account,R.id.clean_password,R.id.iv_show_pwd,R.id.forget_password,R.id.btn_login,R.id.btn_register})
-    public void onViewClicked(View view){
-        switch (view.getId()){
-            case R.id.iv_clean_account:
-                mEtAccount.getText().clear();
-                mEtPassword.getText().clear();
-                break;
-            case R.id.clean_password:
-                mEtPassword.getText().clear();
-                break;
-            case R.id.iv_show_pwd:
-                changePasswordEye();
-                break;
-            case R.id.forget_password:
-                forgetPassword();
-                break;
-            case R.id.btn_login:
-                validator.validate();
-//            case R.id.btn_register:
-//                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
-//                break;
-        }
-    }
-
     /**
      * 设置文本框与右侧删除图标监听器
      */
@@ -383,37 +334,38 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             }
         });
     }
+
+
     /**
-     * 根据返回的结果，存储用户必要的数据到SharePreference
-     * */
-    private void saveUserDataToSharePreference(String userName, String password,LoginInfo loginInfo) {
-        //保存用户账号密码到sharePreference
-        PreferenceUtils.setString(SPConstants.USER_NAME, userName);
-        PreferenceUtils.remove(SPConstants.PASSWORD);
-        // 如果用户点击了“记住密码”，保存密码
-        if (isCheckBox) {
-            String psd = Des3Utils.encode(password);
-            PreferenceUtils.setString(SPConstants.PASSWORD, psd);
+     * 连续点击两次返回键退出APP
+     */
+    //记录上一次点击的时间戳
+    long lastTime = System.currentTimeMillis();
+    @Override
+    public void onBackPressed() {
+        //记录本次按下的时间戳
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - lastTime < 1000){
+            super.onBackPressed();
+            return;
+        }else {
+            ToastUtils.info("再按一下退出",3000);
         }
-        // 保存用户名字
-        PreferenceUtils.setString(SPConstants.USER, loginInfo.getName());
-        // 保存用户ID
-        PreferenceUtils.setInt(SPConstants.USER_ID, loginInfo.getId());
-        // 保存角色
-        PreferenceUtils.setString(SPConstants.ROLE_NAMES,loginInfo.getRoleNames());
+        lastTime = currentTime;
+    }
 
-        // 保存部门
-        if (loginInfo.getFirstDepId() != null) {
-            PreferenceUtils.setString(SPConstants.FIRST_DEP_ID,loginInfo.getFirstDepId());
-        }
+    @Override
+    public void showLoading(String title) {
+        Log.i(TAG,title+"正在加载");
+    }
 
-        //保存token到sharePreference
-        PreferenceUtils.setString(SPConstants.TOKEN, loginInfo.getToken());
-        //获取token,将token保存至Http全局请求参数中
-        Map<String,String> params = new HashMap<>();
-        params.put(Constants.APP_TOKEN,PreferenceUtils.getString(SPConstants.TOKEN,""));
-        App.getInstance().setCommonParam(params, ParamType.PARAM_MAP);
-        //启动本地数据库
-        LitePal.getDatabase();
+    @Override
+    public void stopLoading() {
+        Log.i(TAG,"加载结束");
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        Log.i(TAG,"错误信息:"+msg);
     }
 }

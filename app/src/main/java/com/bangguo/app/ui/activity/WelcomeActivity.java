@@ -15,9 +15,12 @@ import com.bangguo.app.R;
 import com.bangguo.app.common.constants.SPConstants;
 import com.bangguo.app.common.utils.PreferenceUtils;
 import com.bangguo.app.http.Api;
+import com.bangguo.app.http.ApiService;
+import com.bangguo.app.http.HostType;
 import com.bangguo.app.http.JsonResult;
 import com.bangguo.app.manager.ActivityLifecycleManager;
 import com.bangguo.app.model.LoginBannerPic;
+import com.bangguo.common.baseapp.BaseApplication;
 import com.bangguo.common.utils.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,7 +32,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import rx.Observer;
 
 public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adapter<ImageView, LoginBannerPic.ImageAdModel>,BGABanner.Delegate<ImageView,LoginBannerPic.ImageAdModel> {
     private Handler handler = new Handler();
@@ -47,7 +49,7 @@ public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adap
     @BindView(R.id.banner_guide_foreground)
     public BGABanner mForegroundBanner;
 
-    private Api mApi;
+    private ApiService mApi;
     private boolean isDisplay = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adap
         mForegroundBanner.setAdapter(this);
         mForegroundBanner.setDelegate(this);
         //从API加载图片
-        mApi.getBannerPic().enqueue(new Callback<JsonResult<LoginBannerPic>>() {
+        Api.getDefault(HostType.TMS_MANAGE_API).getBannerPic(Api.getCacheControl()).enqueue(new Callback<JsonResult<LoginBannerPic>>() {
             @Override
             public void onResponse(Call<JsonResult<LoginBannerPic>> call, Response<JsonResult<LoginBannerPic>> response) {
                 LoginBannerPic model = response.body().getData();
@@ -141,7 +143,8 @@ public class WelcomeActivity extends AppCompatActivity implements BGABanner.Adap
         }
         String token = PreferenceUtils.getString(SPConstants.TOKEN, "0123456789");
         // 请求后台判断token
-        mApi.checkToken(token).enqueue(new Callback<JsonResult<String>>() {
+        //mApi.checkToken(token).enqueue(new Callback<JsonResult<String>>() {
+        Api.getDefault(HostType.TMS_MANAGE_API).checkToken(Api.getCacheControl(),token).enqueue(new Callback<JsonResult<String>>() {
             @Override
             public void onResponse(Call<JsonResult<String>> call, Response<JsonResult<String>> response) {
                 ToastUtils.normal("接口调用成功");

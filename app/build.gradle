@@ -80,12 +80,12 @@ dependencies {
 
     // Okhttp库
     implementation 'com.squareup.okhttp3:okhttp:4.2.0'
-    // Retrofit库
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
-    //RxJava库
+    implementation 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
     implementation 'io.reactivex:rxjava:1.0.1'
     implementation 'io.reactivex:rxandroid:1.0.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
 
     //XUtil
     implementation 'com.github.xuexiangjys.XUtil:xutil-core:1.1.5'
